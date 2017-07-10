@@ -2,8 +2,10 @@
 -- @Project: FiveM Tools
 -- @Last modified time: 2017-07-06T19:18:17+02:00
 -- @License: GNU General Public License v3.0
+
 local lastPlayerId = nil
 local taxeRating = 0
+local zoneATM = false
 
 function generateButton()
   Citizen.CreateThread(function()
@@ -12,18 +14,56 @@ function generateButton()
       table.insert(Menu.ATMmenu.buttons, { text = translation[language].secondeButton, callback = AllDespositBank })
       table.insert(Menu.ATMmenu.buttons, { text = translation[language].thirdButton, callback = DespositBank })
     end
+    
     if config.enableWithdraw ~= nil and config.enableWithdraw then
       table.insert(Menu.ATMmenu.buttons, { text = translation[language].fourButton, callback = WithdrawBank })
     end
+    
     if config.enableTransfer ~= nil and config.enableTransfer then
       table.insert(Menu.ATMmenu.buttons, { text = translation[language].fiveButton, menu = "PlayerListBank", hoverCallback = PlayerListBank })
     end
+    
     if config.taxe ~= nil and config.taxe >= 0 and config.taxe <= 100 then
       taxeRating = config.taxe
     end
+    
     exports.ft_menuBuilder:Generator(Menu)
     
   end)
+end
+
+function enterATM()
+  Citizen.CreateThread(function()
+  
+    exports.ft_ui:Help("Appuyer sur ~INPUT_FRONTEND_ACCEPT~ pour utiliser le distributeur automatique", 1)
+    zoneATM = true
+    EnableMenu()
+    
+  end)
+end
+
+function exitATM()
+  Citizen.CreateThread(function()
+  
+    exports.ft_ui:Help("Appuyer sur ~INPUT_FRONTEND_ACCEPT~ pour utiliser le distributeur automatique", 0)
+    zoneATM = false
+    if exports.ft_menuBuilder:IsOpened() then
+      exports.ft_menuBuilder:Close()
+    end
+  end)
+end
+
+function EnableMenu()
+  while zoneATM do
+    Citizen.Wait(0)
+    if IsControlJustPressed(1, 38) then
+      if not exports.ft_menuBuilder:IsOpened() and GetLastInputMethod(2) then
+        exports.ft_menuBuilder:Open("ATMmenu")
+      else
+        exports.ft_menuBuilder:Close()
+      end
+    end
+  end
 end
 
 function OpenKeyboard()
@@ -41,7 +81,6 @@ function getPlayers()
     local playerList = {}
     for i = 0, 32 do
         local player = GetPlayerFromServerId(i)
-        print(player)
         if NetworkIsPlayerActive(player) and player ~= GetPlayerFromServerId(PlayerId()) then
             table.insert(playerList, player)
         end
