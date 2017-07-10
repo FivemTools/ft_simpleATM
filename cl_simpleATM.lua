@@ -5,7 +5,6 @@
 
 local lastPlayerId = nil
 local taxeRating = 0
-local zoneATM = false
 
 function generateButton()
   Citizen.CreateThread(function()
@@ -35,27 +34,7 @@ end
 function enterATM()
   Citizen.CreateThread(function()
   
-    exports.ft_ui:Help("Appuyer sur ~INPUT_FRONTEND_ACCEPT~ pour utiliser le distributeur automatique", 1)
-    zoneATM = true
-    EnableMenu()
-    
-  end)
-end
-
-function exitATM()
-  Citizen.CreateThread(function()
-  
     exports.ft_ui:Help("Appuyer sur ~INPUT_FRONTEND_ACCEPT~ pour utiliser le distributeur automatique", 0)
-    zoneATM = false
-    if exports.ft_menuBuilder:IsOpened() then
-      exports.ft_menuBuilder:Close()
-    end
-  end)
-end
-
-function EnableMenu()
-  while zoneATM do
-    Citizen.Wait(0)
     if IsControlJustPressed(1, 38) then
       if not exports.ft_menuBuilder:IsOpened() and GetLastInputMethod(2) then
         exports.ft_menuBuilder:Open("ATMmenu")
@@ -63,10 +42,22 @@ function EnableMenu()
         exports.ft_menuBuilder:Close()
       end
     end
-  end
+    
+  end)
+end
+
+function exitATM()
+  Citizen.CreateThread(function()
+  
+    if exports.ft_menuBuilder:IsOpened() then
+      exports.ft_menuBuilder:Close()
+    end
+    
+  end)
 end
 
 function OpenKeyboard()
+
   DisplayOnscreenKeyboard(1, "FMMC_KEY_TIP8S", "", "", "", "", "", 8)
     while (UpdateOnscreenKeyboard() == 0) do
         DisableAllControlActions(0);
@@ -75,6 +66,7 @@ function OpenKeyboard()
     if (GetOnscreenKeyboardResult() ~= nil) then
         return GetOnscreenKeyboardResult()
     end
+    
 end
 
 function getPlayers()
@@ -90,6 +82,7 @@ end
 
 function PlayerListBank()
   Citizen.CreateThread(function()
+  
     local settings = {
       title = translation[language].title,
 			menuTitle = translation[language].menuTitle,
@@ -109,6 +102,7 @@ function PlayerListBank()
     end
     
     exports.ft_menuBuilder:Add("PlayerListBank", buttons, settings)
+    
   end)
 end
 
@@ -158,6 +152,7 @@ end
 
 function DespositBank()
   Citizen.CreateThread(function()
+  
     local result = OpenKeyboard()
     if type(tonumber(result)) == "number" then
       if tonumber(result) > 0 then
@@ -173,11 +168,13 @@ function DespositBank()
     else
       exports.ft_ui:Notification("~h~~r~Erreur~s~: Vous devez saisir des chiffres seulement!")
     end
+    
   end)
 end
 
 function WithdrawBank()
   Citizen.CreateThread(function()
+  
     local result = OpenKeyboard()
     if type(tonumber(result)) == "number" then
       if tonumber(result) > 0 then
@@ -193,11 +190,13 @@ function WithdrawBank()
     else
       exports.ft_ui:Notification("~h~~r~Erreur~s~: Vous devez saisir des chiffres seulement!")
     end
+    
   end)
 end
 
 function TransferBank()
   Citizen.CreateThread(function()
+  
     local result = OpenKeyboard()
     if type(tonumber(result)) == "number" then
       if tonumber(result) > 0 then
@@ -213,5 +212,6 @@ function TransferBank()
     else
       exports.ft_ui:Notification("~h~~r~Erreur~s~: Vous devez saisir des chiffres seulement!")
     end
+    
   end)
 end
