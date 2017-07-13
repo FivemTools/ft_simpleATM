@@ -1,3 +1,6 @@
+-- @Project: FiveM Tools
+-- @License: GNU General Public License v3.0
+
 local FirstJoinProper = false
 Citizen.CreateThread(function()
   while true do

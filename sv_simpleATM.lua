@@ -1,6 +1,4 @@
--- @Date:   2017-07-01T12:38:45+02:00
 -- @Project: FiveM Tools
--- @Last modified time: 2017-07-06T22:42:30+02:00
 -- @License: GNU General Public License v3.0
 
 RegisterServerEvent('ft_simpleATM:SvDespositMoney')
