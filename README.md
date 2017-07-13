@@ -1,4 +1,5 @@
 # ft_simpleATM
+Warning : pre-release version
 
 ### Prerequisites
 
@@ -20,7 +21,7 @@ Example:
 
 ### Documentation
 
-This is a testing version.
+[Wiki](https://github.com/FivemTools/ft_simpleATM/wiki)
 
 ## License
 
