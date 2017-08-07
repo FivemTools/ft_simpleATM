@@ -125,7 +125,7 @@ function GenerateBankBalance()
     }
     
     local buttons = {
-      {text = translation[language].firstButton.."   /   "..tostring(bank).."$"},
+      {text = "Solde du compte : "..tostring(bank).."$"},
     }
     
     if taxeRating > 0 then
@@ -141,7 +141,7 @@ function AllDespositBank()
   Citizen.CreateThread(function()
     local cash = tonumber(exports.ft_cash:GetCash())
     if cash > 0 then
-      TriggerServerEvent('ft_simpleATM:SvDespositMoney', cash, taxeRating)
+      TriggerServerEvent('ft_simpleATM:SvDespositMoney', cash)
     else
       exports.ft_ui:Notification("~h~~r~Erreur~s~: Vous n'avez pas assez d'argent!")
     end
@@ -156,7 +156,7 @@ function DespositBank()
       if tonumber(result) > 0 then
         local cash = exports.ft_cash:GetCash()
         if tonumber(cash) >= tonumber(result) then
-          TriggerServerEvent('ft_simpleATM:SvDespositMoney', tonumber(result), taxeRating)
+          TriggerServerEvent('ft_simpleATM:SvDespositMoney', tonumber(result))
         else
           exports.ft_ui:Notification("~h~~r~Erreur~s~: Vous n'avez pas assez d'argent!")
         end
